@@ -34,6 +34,11 @@ export default [
         name: 'topic',
         required: true
       },
+      {
+        label: "Define your target audience",
+        field: 'input',
+        name: 'audience',
+      },
     ]
   },
   {

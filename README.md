@@ -33,4 +33,6 @@
 2. **Generate Content**: Once logged in, enter a content prompt, select your preferences, and click the "Generate" button. The AI will generate content based on your input in real time.
 3. **Customize Output**: Adjust the tone and style of the content to better fit your needs, then copy or download the generated content.
 
-
+## Screenshots
+![alt text](image-1.png)
+![alt text](image-3.png)

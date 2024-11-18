@@ -34,5 +34,5 @@
 3. **Customize Output**: Adjust the tone and style of the content to better fit your needs, then copy or download the generated content.
 
 ## Screenshots
-![alt text](image-1.png)
+![alt text](image-2.png)
 ![alt text](image-3.png)

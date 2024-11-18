@@ -5,25 +5,28 @@ import { TEMPLATE } from '../../_components/TemplateListSection'
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { Loader2Icon } from 'lucide-react';
 
 interface PROPS {
   selectedTemplate?: TEMPLATE;
   userFormInput:any;
+  loading:boolean;
 }
 
-function FormSection({ selectedTemplate ,userFormInput }: PROPS) {
+function FormSection({ selectedTemplate ,userFormInput ,loading }: PROPS) {
 
   
   const [formData, setFormData] = useState<any>({}); // Initialize form data state
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value }); // Update form data when input changes
+    setFormData({ ...formData, [name]: value }); // { ...formData } is used to spread the current values of formData into a new object.
+   // [name]: value updates the key in the formData object corresponding to the name of the input field, setting it to the new value the user typed.
+   // This way, the state is updated with the new input value while keeping the other form data unchanged.
   }
   const onSubmit = (e: any) => {
     e.preventDefault();
-    console.log(formData);
-    userFormInput(formData); // Fixed typo here, it should be preventDefault()
+    userFormInput(formData); 
   }
 
 
@@ -44,7 +47,7 @@ function FormSection({ selectedTemplate ,userFormInput }: PROPS) {
             ) : null}
           </div>
         ))}
-        <Button type='submit' className='w-full py-6'>Generate Content!</Button>
+        <Button type='submit' className='w-full py-6' disabled={loading}> {loading&&<Loader2Icon className='animate-spin'/>} Generate Content!</Button>
       </form>
     </div>
   )

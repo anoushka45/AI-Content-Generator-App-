@@ -10,6 +10,7 @@ import Link from 'next/link';  // Link for navigation
 import { chatSession } from '@/utils/AiModal';
 import { AiOutput } from '@/utils/schema';
 import { db } from '@/utils/db';
+import { useUser } from '@clerk/nextjs';
 interface PROPS {
   params: {
     'template-slug': string;  // URL param for selecting a template
@@ -24,6 +25,7 @@ function CreateNewContent({ params }: PROPS) {
   
   const [loading,setLoading] = useState(false);
   const [aiOutput, setAiOutput]= useState<string>()
+  const {user} = useUser();
   // Step 2: Function to handle form submission, used in the child component
   const GenerateAIcontent = async (formData: any) => {
     try {
@@ -33,13 +35,18 @@ function CreateNewContent({ params }: PROPS) {
   
       // Send message to AI
       const result = await chatSession.sendMessage(FinalAIPrompt);
-      const aiResponse = result?.response.text || "";
+  
+      // Ensure you're extracting the actual text from the response
+      const aiResponse = result?.response.text || "";  // This should be the actual content
+  
+      // If you need any post-processing or formatting on the response, do it here
+      const displayedOutput = aiResponse;  // This is the content that will be shown to the user
   
       console.log(aiResponse);
       setAiOutput(aiResponse);
   
-      // Save the output in the database
-      await saveInDb(formData, selectedTemplate?.slug, aiResponse);
+      // Save in DB with both aiResponse and displayedOutput
+      await saveInDb(formData, selectedTemplate?.slug, aiResponse, displayedOutput);
   
       setLoading(false);
     } catch (error) {
@@ -48,25 +55,35 @@ function CreateNewContent({ params }: PROPS) {
     }
   };
   
+  
   const saveInDb = async (
     formData: any,
     slug: string | undefined,
-    aiResponse: string
+    aiResponse: string,
+    displayedOutput: string // New parameter for the displayed output
   ) => {
     if (!slug) {
       throw new Error("Template slug is required.");
+    }
+  
+    if (!user?.primaryEmailAddress?.emailAddress) {
+      console.error("User email not found.");
+      return;
     }
   
     const result = await db.insert(AiOutput).values({
       formData: JSON.stringify(formData), // Convert object to string
       templateSlug: slug,
       aiResponse,
-      createdBy: "test@example.com", // Replace with actual user email
+      displayedOutput, // Save the actual output displayed to the user
+      createdBy: user.primaryEmailAddress.emailAddress, // Fetch email dynamically
       createdAt: new Date().toISOString(), // Current timestamp
     });
   
     console.log("Data saved in DB:", result);
   };
+  
+  
   
   return (
     <div className='p-10'>
